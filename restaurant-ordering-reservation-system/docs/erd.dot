@@ -1,0 +1,45 @@
+digraph ERD {
+  rankdir=LR; fontname="Helvetica"; nodesep=0.5; ranksep=1.0;
+  node [shape=plaintext fontname="Helvetica" fontsize=10];
+  edge [fontname="Helvetica" fontsize=9 arrowhead=crow arrowtail=tee dir=both color="#555555"];
+
+  customer [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>customer</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> customer_id</TD></TR><TR><TD ALIGN="LEFT">first_name, last_name</TD></TR>
+   <TR><TD ALIGN="LEFT">email (UQ)</TD></TR><TR><TD ALIGN="LEFT">phone</TD></TR><TR><TD ALIGN="LEFT">password (hash)</TD></TR><TR><TD ALIGN="LEFT">created_at</TD></TR></TABLE>>];
+  orders [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>orders</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> order_id</TD></TR><TR><TD ALIGN="LEFT"><B>FK</B> customer_id</TD></TR>
+   <TR><TD ALIGN="LEFT">order_date</TD></TR><TR><TD ALIGN="LEFT">order_status</TD></TR><TR><TD ALIGN="LEFT">total_amount</TD></TR></TABLE>>];
+  order_item [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#c26a2e"><FONT COLOR="white"><B>order_item</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK, FK</B> order_id</TD></TR><TR><TD ALIGN="LEFT"><B>PK, FK</B> menu_item_id</TD></TR>
+   <TR><TD ALIGN="LEFT">quantity</TD></TR><TR><TD ALIGN="LEFT">unit_price</TD></TR><TR><TD ALIGN="LEFT">subtotal</TD></TR></TABLE>>];
+  menu_item [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>menu_item</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> menu_item_id</TD></TR><TR><TD ALIGN="LEFT">item_name, description</TD></TR>
+   <TR><TD ALIGN="LEFT">category</TD></TR><TR><TD ALIGN="LEFT">price (&gt;= 0)</TD></TR><TR><TD ALIGN="LEFT">availability</TD></TR></TABLE>>];
+  payment [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>payment</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> payment_id</TD></TR><TR><TD ALIGN="LEFT"><B>FK, UQ</B> order_id</TD></TR>
+   <TR><TD ALIGN="LEFT">payment_date, payment_method</TD></TR><TR><TD ALIGN="LEFT">amount, payment_status</TD></TR></TABLE>>];
+  reservation [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>reservation</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> reservation_id</TD></TR><TR><TD ALIGN="LEFT"><B>FK</B> customer_id</TD></TR><TR><TD ALIGN="LEFT"><B>FK</B> table_id</TD></TR>
+   <TR><TD ALIGN="LEFT">reservation_date, reservation_time</TD></TR><TR><TD ALIGN="LEFT">number_of_guests, reservation_status</TD></TR></TABLE>>];
+  restaurant_table [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#8b2e16"><FONT COLOR="white"><B>restaurant_table</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> table_id</TD></TR><TR><TD ALIGN="LEFT">table_number (UQ)</TD></TR>
+   <TR><TD ALIGN="LEFT">capacity (&gt; 0)</TD></TR><TR><TD ALIGN="LEFT">status</TD></TR></TABLE>>];
+  staff [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3">
+   <TR><TD BGCOLOR="#555555"><FONT COLOR="white"><B>staff</B></FONT></TD></TR>
+   <TR><TD ALIGN="LEFT"><B>PK</B> staff_id</TD></TR><TR><TD ALIGN="LEFT">first_name, last_name</TD></TR>
+   <TR><TD ALIGN="LEFT">email (UQ), role</TD></TR><TR><TD ALIGN="LEFT">password (hash)</TD></TR></TABLE>>];
+
+  customer -> orders [label="1 : N places"];
+  customer -> reservation [label="1 : N makes"];
+  restaurant_table -> reservation [label="1 : N is booked in"];
+  orders -> order_item [label="1 : N contains"];
+  menu_item -> order_item [label="1 : N appears in"];
+  orders -> payment [label="1 : 1 paid by" arrowhead=tee arrowtail=tee];
+}

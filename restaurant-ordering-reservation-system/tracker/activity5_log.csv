@@ -1,0 +1,2 @@
+Project,Database inspected,Account and role used,Health check result,Maintenance performed,Query analyzed,Recommendation priority,Evidence folder link,Feedback sent to owners,PDF progress document,Last updated
+"Group __ - <project>","<db> / PostgreSQL <ver>","g__maint (DBA-maintenance); g__report (viewer)","Healthy / Issues found / Not reachable - note","ANALYZE + VACUUM (VERBOSE, ANALYZE) <date>","<short description> - <scan type>","Immediate action / Follow-up action / No action required","<repo>/tree/main/db-maintenance/group-XX","Yes - <date>","<PDF_LINK>",<date>

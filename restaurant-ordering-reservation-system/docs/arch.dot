@@ -1,0 +1,8 @@
+digraph A { rankdir=TB; node [shape=box style="rounded,filled" fontname="Helvetica" fontsize=11 fillcolor="#fff7ec" color="#8b2e16"]; edge [color="#555555" fontname="Helvetica" fontsize=9];
+ users [label="Users\nCustomers - Staff - Administrators (browser)"];
+ ui [label="Presentation layer\nHTML + CSS (server-rendered PHP views)"];
+ app [label="Application layer - PHP 8\nrouter, CSRF, sessions, business logic\n(php -S localhost:8000 -t app/public)"];
+ db [label="PostgreSQL 18.6\ngrp_binarysisters_projectdb (schema public)\nconstraints - triggers - views - roles" fillcolor="#f3e8f7" color="#6a1b9a"];
+ dba [label="DBA tools\npsql - pgAdmin 4 - pg_dump/pg_restore" fillcolor="#e8f5e9" color="#2e7d32"];
+ users -> ui [label="HTTP"]; ui -> app [label="request / response"]; app -> db [label="PDO (prepared SQL)\naccount rors_app"]; dba -> db [label="rors_dba / rors_maint / rors_backup"];
+}
