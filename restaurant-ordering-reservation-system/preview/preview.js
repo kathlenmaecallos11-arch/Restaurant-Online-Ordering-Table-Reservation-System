@@ -1,34 +1,129 @@
-/* Mesa preview: a working DEMO of the interface. Data lives only in this browser (localStorage).
-   The real system (PHP + PostgreSQL) is in ../app; see ../docs/DATABASE_CONNECTION.md. */
+/* Mesa preview: a working DEMO of the interface. */
 (function () {
   'use strict';
-  var KEY = 'mesa_preview_v1';
+  var KEY = 'mesa_preview_v2';
   var SLOTS = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
   var METHODS = ['cash','card','gcash','bank_transfer'];
   var STATUSES = ['pending','confirmed','preparing','ready','completed','cancelled'];
   var MENU = [
-    [1,'Lumpiang Shanghai','Crispy pork spring rolls with sweet chili dip (8 pcs).','Appetizer',180,true],
-    [2,'Calamares','Fried squid rings with spiced vinegar.','Appetizer',220,true],
-    [3,'Chicken Adobo','Chicken braised in soy sauce, vinegar and garlic.','Main Course',280,true],
-    [4,'Sinigang na Baboy','Pork in tamarind broth with vegetables.','Main Course',320,true],
-    [5,'Kare-Kare','Oxtail and vegetables in peanut sauce with bagoong.','Main Course',420,true],
-    [6,'Pancit Canton','Stir-fried noodles with vegetables and pork.','Main Course',250,true],
-    [7,'Halo-Halo','Shaved ice dessert with sweet beans, fruits and leche flan.','Dessert',150,true],
-    [8,'Leche Flan','Creamy caramel custard.','Dessert',120,false],
-    [9,'Iced Tea','House-blend iced tea (glass).','Beverage',80,true],
-    [10,'Buko Juice','Fresh young coconut juice.','Beverage',100,true]
+    [1,"Lumpiang Shanghai","Crispy pork spring rolls served with sweet chili sauce.","Appetizer",150,true],
+    [2,"Calamares","Golden fried squid rings with garlic-vinegar dip.","Appetizer",220,true],
+    [3,"Sisig Nachos","Tortilla chips topped with pork sisig and cheese sauce.","Appetizer",240,true],
+    [4,"Tokwat Baboy","Fried tofu and pork in soy-vinegar dressing.","Appetizer",160,true],
+    [5,"Chicharon Bulaklak","Crispy ruffled pork fat with spiced vinegar.","Appetizer",260,true],
+    [6,"Fresh Lumpia","Fresh vegetable roll with peanut garlic sauce.","Appetizer",140,true],
+    [7,"Garlic Mushrooms","Sauteed button mushrooms in garlic butter.","Appetizer",180,true],
+    [8,"Cheesy Dynamite","Chili stuffed with cheese, wrapped and fried.","Appetizer",170,true],
+    [9,"Kinilaw na Tanigue","Fresh tuna cured in vinegar, ginger and chili.","Appetizer",280,true],
+    [10,"Buffalo Wings (6 pcs)","Spicy chicken wings with ranch dip.","Appetizer",230,false],
+    [11,"Chicken Adobo","Chicken braised in soy sauce, vinegar and garlic.","Main Course",210,true],
+    [12,"Pork Sinigang","Pork ribs in sour tamarind broth with vegetables.","Main Course",260,true],
+    [13,"Beef Kare-Kare","Oxtail and beef in peanut sauce with bagoong.","Main Course",350,true],
+    [14,"Crispy Pata","Deep-fried pork knuckle with liver sauce.","Main Course",620,true],
+    [15,"Lechon Kawali","Deep-fried crispy pork belly with sauce.","Main Course",290,true],
+    [16,"Sizzling Sisig","Chopped pork sisig on a hot plate with egg.","Main Course",270,true],
+    [17,"Bicol Express","Pork in coconut milk with chili peppers.","Main Course",240,true],
+    [18,"Beef Caldereta","Beef stew in tomato and liver sauce.","Main Course",330,true],
+    [19,"Chicken Inasal","Grilled chicken marinated in calamansi and lemongrass.","Main Course",225,true],
+    [20,"Grilled Liempo","Grilled pork belly with soy-calamansi dip.","Main Course",280,true],
+    [21,"Bangus Sisig","Boneless milkfish sisig with onions and chili.","Main Course",250,true],
+    [22,"Sweet and Sour Fish","Fried fish fillet in sweet and sour sauce.","Main Course",265,true],
+    [23,"Pancit Canton","Stir-fried egg noodles with meat and vegetables.","Main Course",190,true],
+    [24,"Pancit Palabok","Rice noodles with shrimp sauce and toppings.","Main Course",200,true],
+    [25,"Beef Tapa Silog","Marinated beef tapa with garlic rice and egg.","Main Course",215,true],
+    [26,"Longganisa Silog","Sweet native sausage with garlic rice and egg.","Main Course",185,true],
+    [27,"Tuyo Silog","Dried herring with garlic rice and egg.","Main Course",165,true],
+    [28,"Pork Sisig Rice Bowl","Sisig over steamed rice with fried egg.","Main Course",195,true],
+    [29,"Seafood Kare-Kare","Mixed seafood in peanut sauce with vegetables.","Main Course",380,true],
+    [30,"Shrimp in Garlic Butter","Large shrimp sauteed in garlic butter.","Main Course",360,true],
+    [31,"Garlic Fried Rice","Fried rice with toasted garlic.","Main Course",60,true],
+    [32,"Plain Rice","Steamed white rice.","Main Course",30,true],
+    [33,"Halo-Halo","Shaved ice with sweet beans, fruits, leche flan and ube ice cream.","Dessert",150,true],
+    [34,"Leche Flan","Creamy caramel custard.","Dessert",110,true],
+    [35,"Turon with Ice Cream","Banana spring roll with caramel and vanilla ice cream.","Dessert",130,true],
+    [36,"Mango Float","Layered graham, cream and ripe mango.","Dessert",140,true],
+    [37,"Ube Halaya Cake","Soft ube cake with halaya topping.","Dessert",160,true],
+    [38,"Buko Pandan","Young coconut and pandan jelly in sweet cream.","Dessert",120,true],
+    [39,"Brownie Sundae","Warm chocolate brownie with vanilla ice cream.","Dessert",170,true],
+    [40,"Sans Rival","Layered cashew meringue with buttercream.","Dessert",180,false],
+    [41,"Iced Tea (Glass)","House-brewed iced tea.","Beverage",60,true],
+    [42,"Calamansi Juice","Fresh calamansi juice, sweetened.","Beverage",70,true],
+    [43,"Mango Shake","Blended ripe mango shake.","Beverage",100,true],
+    [44,"Buko Juice","Fresh young coconut juice.","Beverage",80,true],
+    [45,"Sagot Gulaman","Brown sugar drink with sago and gulaman.","Beverage",65,true],
+    [46,"Brewed Coffee","Freshly brewed local coffee.","Beverage",90,true],
+    [47,"Iced Latte","Espresso with cold milk over ice.","Beverage",125,true],
+    [48,"Soda (Can)","Assorted canned soft drinks.","Beverage",55,true],
+    [49,"Bottled Water","500 ml purified water.","Beverage",30,true],
+    [50,"Pitcher of Iced Tea","Good for 4 persons.","Beverage",180,true]
   ].map(function (m) { return { id: m[0], name: m[1], desc: m[2], cat: m[3], price: m[4], on: m[5] }; });
-  var TABLES = [[1,2],[2,2],[3,4],[4,4],[5,4],[6,6],[7,8]].map(function (t) { return { n: t[0], seats: t[1] }; });
+  var TABLES = [[1,2,"available"],[2,2,"available"],[3,2,"occupied"],[4,2,"available"],[5,2,"available"],[6,4,"available"],[7,4,"available"],[8,4,"reserved"],[9,4,"available"],[10,4,"available"],[11,4,"available"],[12,4,"available"],[13,6,"available"],[14,6,"out_of_service"],[15,6,"available"],[16,6,"available"],[17,8,"occupied"],[18,8,"available"],[19,10,"available"],[20,12,"available"]].map(function (t) { return { n: t[0], seats: t[1], status: t[2] }; });
 
   function seed() {
     return {
-      user: null, cart: {}, nextOrder: 7, nextRes: 8,
+      user: null, cart: {}, nextOrder: 61, nextRes: 51,
       orders: [
-        { id: 5, who: 'Liza Ramos',   when: 'Nov 3, 2026 9:12 AM',  status: 'pending',   pay: 'pending',   total: 360,  mine: false },
-        { id: 4, who: 'Pedro Garcia', when: 'Nov 2, 2026 6:40 PM',  status: 'preparing', pay: 'pending',   total: 1180, mine: false },
-        { id: 3, who: 'Ana Reyes',    when: 'Oct 31, 2026 7:05 PM', status: 'completed', pay: 'paid',      total: 570,  mine: false },
-        { id: 6, who: 'Maria Santos', when: 'Nov 1, 2026 12:30 PM', status: 'cancelled', pay: 'cancelled', total: 640,  mine: false }
-      ],
+        [5,"Nour Kumar","Dec 27, 2023 1:10 PM","preparing","paid",885],
+        [37,"Felix Moreau","Dec 21, 2023 6:20 PM","completed","paid",590],
+        [42,"Rosa Davis","Dec 20, 2023 6:10 PM","completed","paid",750],
+        [33,"Yusuf Hughes","Dec 20, 2023 4:15 PM","completed","paid",570],
+        [7,"Ines Diaz","Dec 18, 2023 2:45 PM","completed","paid",240],
+        [28,"Ines Diaz","Dec 15, 2023 1:15 PM","completed","paid",410],
+        [38,"Maja Reyes","Nov 30, 2023 9:45 PM","completed","paid",620],
+        [43,"Diego Shah","Nov 26, 2023 6:00 PM","completed","paid",945],
+        [20,"Lena Schmidt","Nov 8, 2023 6:15 PM","completed","paid",410],
+        [47,"Carlos Almeida","Nov 7, 2023 4:45 PM","completed","paid",360],
+        [2,"Mia Hughes","Nov 2, 2023 8:00 PM","completed","paid",1000],
+        [22,"James Castro","Oct 29, 2023 3:45 PM","completed","paid",945],
+        [26,"Lina Nguyen","Oct 20, 2023 2:30 PM","cancelled","cancelled",170],
+        [4,"Felix Moreau","Oct 5, 2023 10:10 AM","completed","paid",350],
+        [29,"Felix Moreau","Oct 4, 2023 6:20 PM","completed","paid",590],
+        [8,"Emma Hughes","Sep 30, 2023 5:00 PM","completed","paid",415],
+        [19,"Hugo Novak","Sep 20, 2023 6:15 PM","cancelled","refunded",1080],
+        [57,"Nour Kumar","Sep 20, 2023 4:20 PM","completed","paid",870],
+        [60,"Lena Schmidt","Sep 7, 2023 2:40 PM","completed","paid",650],
+        [15,"Tariq Ahmed","Sep 5, 2023 8:50 PM","ready","paid",1060],
+        [40,"Emma Hughes","Aug 28, 2023 5:50 PM","completed","paid",1185],
+        [17,"Andre Oliveira","Aug 21, 2023 6:15 PM","completed","paid",420],
+        [13,"Nour Kumar","Jul 28, 2023 8:10 PM","pending","pending",740],
+        [3,"Jack Singh","Jul 22, 2023 4:30 PM","completed","paid",730],
+        [21,"Lena Schmidt","Jul 10, 2023 11:20 AM","completed","paid",435],
+        [59,"Tariq Bauer","Jul 6, 2023 8:00 PM","completed","paid",650],
+        [39,"Pedro Flores","Jul 5, 2023 9:15 PM","completed","paid",965],
+        [54,"Nour Smith","Jun 17, 2023 3:15 PM","completed","paid",2075],
+        [25,"Diego Lopez","Jun 9, 2023 8:50 PM","completed","paid",850],
+        [1,"Ines Kumar","Jun 9, 2023 11:50 AM","ready","paid",710],
+        [24,"Hugo Reyes","May 29, 2023 12:30 PM","completed","paid",530],
+        [6,"Daniel Reyes","May 21, 2023 11:00 AM","completed","paid",850],
+        [23,"Tariq Ahmed","May 8, 2023 3:45 PM","completed","paid",525],
+        [41,"Felix Moreau","Apr 26, 2023 3:30 PM","pending","pending",60],
+        [36,"Ravi Evans","Apr 25, 2023 5:45 PM","completed","paid",990],
+        [56,"Zoe Smith","Apr 25, 2023 2:50 PM","cancelled","cancelled",870],
+        [55,"Julia Zhang","Apr 24, 2023 4:30 PM","completed","paid",430],
+        [32,"Lina Ahmed","Apr 22, 2023 6:45 PM","completed","paid",180],
+        [44,"Rosa Davis","Apr 22, 2023 11:40 AM","completed","paid",295],
+        [12,"Emma Hughes","Apr 21, 2023 6:00 PM","completed","paid",590],
+        [16,"Rosa Davis","Apr 7, 2023 12:10 PM","completed","paid",740],
+        [46,"Nour Shah","Apr 6, 2023 4:00 PM","pending","pending",335],
+        [50,"Fatima Torres","Apr 3, 2023 12:20 PM","completed","paid",625],
+        [9,"Pedro Flores","Apr 2, 2023 4:30 PM","ready","paid",820],
+        [52,"Yara Ahmed","Mar 30, 2023 9:15 PM","preparing","paid",640],
+        [53,"Maja Reyes","Mar 29, 2023 7:00 PM","completed","paid",860],
+        [31,"Mateo Taylor","Mar 29, 2023 5:10 PM","completed","paid",415],
+        [27,"Andre Oliveira","Mar 19, 2023 2:40 PM","cancelled","cancelled",995],
+        [10,"Noah Smith","Mar 8, 2023 3:20 PM","completed","paid",170],
+        [51,"Mateo Taylor","Mar 7, 2023 1:40 PM","completed","paid",770],
+        [30,"Ines Kumar","Mar 4, 2023 5:20 PM","completed","paid",920],
+        [14,"Felix Moreau","Feb 25, 2023 10:20 AM","completed","paid",990],
+        [58,"Rosa Davis","Feb 18, 2023 3:50 PM","completed","paid",630],
+        [18,"Ravi Evans","Feb 12, 2023 10:20 AM","cancelled","cancelled",1430],
+        [11,"Nour Kumar","Feb 3, 2023 6:40 PM","completed","paid",555],
+        [45,"Ines Diaz","Jan 22, 2023 1:15 PM","completed","paid",1190],
+        [34,"Ana Tanaka","Jan 19, 2023 6:20 PM","completed","paid",970],
+        [49,"Zoe Smith","Jan 10, 2023 8:50 PM","completed","paid",1135],
+        [35,"Nour Shah","Jan 10, 2023 5:15 PM","completed","paid",1075],
+        [48,"Kai Yilmaz","Jan 2, 2023 9:10 PM","completed","paid",255]
+      ].map(function (o) { return { id: o[0], who: o[1], when: o[2], status: o[3], pay: o[4], total: o[5], mine: false }; }),
       res: []
     };
   }
@@ -62,13 +157,22 @@
   /* ---------- shared header ---------- */
   var page = location.pathname.split('/').pop() || 'index.html';
   var admin = /^admin/.test(page);
+
+  /* ---------- staff login (role + passcode) ---------- */
+  var STAFF_ACCOUNTS = {
+    admin: { code: 'BinarySisters',      name: 'Alicia Mendoza',   title: 'Administrator' },
+    staff: { code: 'BinarySistersStaff', name: 'Ramon Villanueva', title: 'Staff' }
+  };
+  function staffRole() { try { var r = sessionStorage.getItem('mesa_staff'); return STAFF_ACCOUNTS[r] ? r : ''; } catch (e) { return ''; } }
+  var me = STAFF_ACCOUNTS[staffRole()];
+  if (admin && !me) { location.replace('staff-login.html'); return; }
   function nav(href, text) { return '<a href="' + href + '"' + (page === href ? ' aria-current="page"' : '') + '>' + text + '</a>'; }
   function chrome() {
     var head;
     if (admin) {
       head = '<aside class="side"><a class="brand" href="admin.html">Mesa</a><nav aria-label="Staff">' +
         nav('admin.html', 'Today') + nav('admin-orders.html', 'Orders') + '<a href="menu.html">View customer site</a></nav>' +
-        '<div class="me">Alicia Mendoza<br><span>Administrator</span><form id="logout"><button class="link">Log out</button></form></div></aside>';
+        '<div class="me">' + me.name + '<br><span>' + me.title + '</span><form id="logout"><button class="link">Log out</button></form></div></aside>';
       return head;
     }
     head = '<header class="site-header"><div class="bar"><a class="brand" href="index.html">Mesa<small>order &amp; reserve</small></a>' +
@@ -88,7 +192,7 @@
   var pending = sessionStorage.getItem('mesa_flash');
   if (pending) { sessionStorage.removeItem('mesa_flash'); pending = JSON.parse(pending); setTimeout(function () { toast(pending[0], pending[1]); }, 0); }
   var lo = $('#logout');
-  if (lo) lo.addEventListener('submit', function (e) { e.preventDefault(); S.user = null; S.cart = {}; save(); flashNext('You have been logged out.'); location.href = 'index.html'; });
+  if (lo) lo.addEventListener('submit', function (e) { e.preventDefault(); S.user = null; S.cart = {}; save(); try { sessionStorage.removeItem('mesa_staff'); } catch (x) {} flashNext('You have been logged out.'); location.href = 'index.html'; });
 
   /* ---------- pages ---------- */
   var pages = {};
@@ -98,7 +202,7 @@
     var f = $('#find'); f.date.value = iso; f.date.min = new Date().toISOString().slice(0, 10);
     f.time.innerHTML = SLOTS.map(function (s) { return '<option value="' + s + '"' + (s === '18:00' ? ' selected' : '') + '>' + t12(s) + '</option>'; }).join('');
     f.addEventListener('submit', function (e) { e.preventDefault(); location.href = 'reserve.html?date=' + f.date.value + '&time=' + f.time.value + '&guests=' + f.guests.value; });
-    $('#featured').innerHTML = MENU.filter(function (m) { return [3, 4, 7, 1].indexOf(m.id) > -1; }).map(function (m) {
+    $('#featured').innerHTML = MENU.filter(function (m) { return [11, 12, 33, 1].indexOf(m.id) > -1; }).map(function (m) {
       return '<li class="dish"><div><div class="dish-head"><a class="dish-name" href="menu.html?q=' + encodeURIComponent(m.name) + '">' + esc(m.name) + '</a><span class="leader" aria-hidden="true"></span><span class="price">' + money(m.price) + '</span></div><p class="dish-desc">' + esc(m.desc) + '</p></div></li>';
     }).join('');
   };
@@ -175,6 +279,18 @@
     });
   };
 
+  pages['staff-login.html'] = function () {
+    if (me) { location.replace('admin.html'); return; }
+    $('#staffform').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target, role = f.role.value;
+      if (f.code.value !== STAFF_ACCOUNTS[role].code) { toast('Incorrect passcode for ' + STAFF_ACCOUNTS[role].title.toLowerCase() + ' access.', 'error'); f.code.value = ''; f.code.focus(); return; }
+      try { sessionStorage.setItem('mesa_staff', role); } catch (x) {}
+      flashNext('Signed in as ' + STAFF_ACCOUNTS[role].name + ' (' + STAFF_ACCOUNTS[role].title.toLowerCase() + ').');
+      location.href = 'admin.html';
+    });
+  };
+
   pages['reserve.html'] = function () {
     var f = $('#rform'), date = qs('date'), time = qs('time'), guests = parseInt(qs('guests'), 10) || 2;
     f.date.value = date || new Date(Date.now() + 864e5).toISOString().slice(0, 10); f.date.min = new Date().toISOString().slice(0, 10);
@@ -185,7 +301,7 @@
     var start = new Date(date + 'T' + time + ':00');
     if (start <= new Date()) { $('#result').innerHTML = '<div class="flash error">Choose a date and time in the future.</div>'; return; }
     var free = TABLES.filter(function (t) {
-      if (t.seats < guests) return false;
+      if (t.seats < guests || t.status === 'out_of_service') return false;
       return !S.res.some(function (r) { return r.table === t.n && r.status !== 'cancelled' && Math.abs(new Date(r.date + 'T' + r.time + ':00') - start) < 2 * 36e5; });
     });
     var h = '<h2>Free tables on ' + start.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) + ' at ' + t12(time) + '</h2>';
@@ -236,6 +352,7 @@
     var pend = S.orders.filter(function (o) { return o.status === 'pending'; }).length;
     var unpaid = S.orders.filter(function (o) { return o.pay === 'pending'; }).length;
     $('#n1').textContent = pend; $('#n3').textContent = unpaid;
+    var hi = $('#app .muted'); if (hi) hi.textContent = 'Signed in as ' + me.name + ' (' + me.title.toLowerCase() + ').';
     $('#recent').innerHTML = S.orders.slice(0, 5).map(function (o) { return '<tr><td><a href="admin-orders.html">#' + o.id + '</a></td><td>' + esc(o.who) + '</td><td>' + esc(o.when) + '</td><td><span class="badge ' + o.status + '">' + label(o.status) + '</span></td><td class="right">' + money(o.total) + '</td></tr>'; }).join('');
   };
   pages['admin-orders.html'] = function () {
