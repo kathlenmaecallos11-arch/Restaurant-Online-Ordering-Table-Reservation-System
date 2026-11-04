@@ -5,7 +5,7 @@
 
 **Rule used:** least privilege. Each account gets only what its job needs. No account used by the application is a superuser. Passwords are not stored in the repository.
 
-## Table 1: Login accounts
+## Login accounts
 
 | Login account | Group role | Application role served | Responsibility | Required privileges |
 |---|---|---|---|---|
@@ -16,7 +16,7 @@
 | `rors_dba` | `rors_admin_grp` | None (database administrator, not the Restaurant Administrator) | Manage the database objects | CONNECT; USAGE and CREATE on `public`; ALL on tables and sequences; `pg_monitor`. Not a superuser |
 | `postgres` | – | None | One-time setup only. Not used by the application | Superuser |
 
-## Table 2: Application roles
+## Application roles
 
 People who use the app have no PostgreSQL logins. All three application roles use the account `rors_app` (group role `rors_runtime_grp`), and the PHP app decides what each person may do. The Cashier, Waiter and Kitchen Staff belong to the **Restaurant Staff** group (role `staff`). The Manager and the Administrator belong to the **Restaurant Administrator** group (role `admin`).
 
