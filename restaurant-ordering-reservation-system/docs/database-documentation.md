@@ -64,8 +64,30 @@ See `docs/erd.png` (generated from the real design) and the Mermaid version in `
 ## 5. Indexes (`004_indexes.sql`)
 `idx_orders_customer_date`, `idx_orders_status`, `idx_order_item_menu_item`, `idx_reservation_customer`, `idx_reservation_date`, `idx_menu_item_category` + automatic indexes of PKs, UNIQUE constraints and the exclusion constraint.
 
-## 6. Seed data
-2 staff, 5 customers, 10 menu items, 8 tables, 6 orders (14 lines), 5 payments, 7 reservations (`database/seeds/001_seed_data.sql`).
+## 6. Seed data (`database/seeds/001_seed_data.sql`)
+Synthetic data, no real people: **51 customers, 10 staff, 50 menu items, 20 tables, 60 orders (167 order lines), 56 payments, 50 reservations.**
+Run it once, on an empty database, after the migrations. The file ends with a count query that must show 51 / 10 / 50 / 20 / 60 / 167 / 56 / 50.
 
-## 7. Reset / rebuild
+* Order totals equal the sum of their lines, every payment equals its order total, no table is double-booked and no reservation exceeds its table's capacity, so the whole file passes the constraints and triggers of migrations 001 and 002.
+* Orders and reservations are dated 2023 (history). New orders and reservations are made through the application.
+* The sample data is larger than the "approximately 5–10 rows per table" planned in Activity 2 (Part 11) so that queries, filters and the later monitoring activities work on a realistic amount of data.
+* The values follow the CHECK lists above: staff roles are `admin` / `staff` (the application roles); payment methods are `cash`, `card`, `gcash`, `bank_transfer`; tables that are not usable are `out_of_service`.
+
+### Sample accounts (local testing only, not real credentials)
+| Application role | Email | Password |
+|---|---|---|
+| Administrator | `admin@rors.example` | `Admin123!` |
+| Staff | `staff@rors.example` | `Staff123!` |
+| Customer | `maria.santos@rors.example` | `Password123!` |
+| Administrator | `maria.santos@binarysisters-resto.example` | `MariaClaraSantos@123` |
+| Staff | `andrea.cruz@binarysisters-resto.example` | `AndreaDelaCruz@123` |
+| Customer | `olivia.wagner@example.com` | `OliviaWagner@123` |
+
+Every other sample account (50 customers and 8 staff) uses the password **full name without spaces + `@123`**.
+The first three accounts are the ones named in `README.md` and `docs/user-roles.md`.
+
+## 7. Tests (`tests/crud_tests.sql`)
+Create, retrieve, update and delete tests plus 14 constraint tests (NOT NULL, UNIQUE, CHECK, FOREIGN KEY, the no-double-booking rule and the capacity rule). Everything runs in one transaction that ends with `ROLLBACK`, so the sample data is unchanged. Every line must show `PASS` and `failed = 0`; each constraint test also checks that the database refused the statement for the expected reason (SQLSTATE).
+
+## 8. Reset / rebuild
 `.\database\setup.ps1 -Reset` (local development database only).

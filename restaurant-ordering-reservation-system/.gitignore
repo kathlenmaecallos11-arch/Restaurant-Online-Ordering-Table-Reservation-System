@@ -1,0 +1,16 @@
+# secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# database dumps and backups (they contain data)
+*.dump
+*.sql.gz
+*.bak
+
+# logs, dependencies and system files
+*.log
+vendor/
+node_modules/
+.DS_Store
+Thumbs.db
