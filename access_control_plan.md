@@ -1,4 +1,4 @@
-## 5. Access-control plan
+## Access-control plan
 
 The application connects to PostgreSQL with one runtime account, so all six application roles are served by the same login account. Customers and staff have no PostgreSQL login. Each login account receives its privileges only through a group role.
 
