@@ -6,7 +6,7 @@ Group: Binary Sisters | Course: COMP 018 – Database Administration | Database:
 ---
 ## 1. Users of the system
 
-The system has three types of users (from the Activity 2 blueprint). Together they cover six roles.
+The system has three types of users (Customers, Restaurant staff, and Restaurant administrators). Together they cover six roles (Customer, Administrator, Manager, Cashier, Waiter, and Kitchen Staff ).
 
 | User type | Roles included | Description |
 |---|---|---|
