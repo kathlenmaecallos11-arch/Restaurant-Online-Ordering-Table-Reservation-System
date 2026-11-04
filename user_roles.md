@@ -1,77 +1,73 @@
 # Application User Roles Documentation
 
-**Restaurant Online Ordering & Table Reservation System (RORS)**
+**Restaurant Online Ordering & Table Reservation System**
 Group: Binary Sisters | Course: COMP 018 – Database Administration | Database: `grp_binarysisters_projectdb`
 
-The roles **inside the application** (what a person can do after logging in) are separate from the roles **inside PostgreSQL** (what a database account can do). End users do **not** have PostgreSQL logins. The web application connects with one runtime account and enforces the application roles in PHP code (`require_customer()` and `require_staff([...])`).
-
-> This document follows the implemented code (`app/src/helpers.php`, `controllers/admin.php`), the schema (`staff.role IN ('admin','staff')`) and the SQL in `database/roles/`.
-
 ---
-
 ## 1. Users of the system
 
-| User type | Application role | Stored in | Description |
-|---|---|---|---|
-| Customers | **Customer** | table `customer` (self-registered) | Restaurant guests who register, view the menu, order food and reserve tables |
-| Restaurant staff | **Staff** | table `staff`, `role = 'staff'` | Employees who run daily service: orders, reservations, payments, table status, menu availability |
-| Restaurant administrators | **Administrator** | table `staff`, `role = 'admin'` | Staff who also manage the catalogue (menu, tables) and accounts |
+The system has three types of users (Customers, Restaurant staff, and Restaurant administrators). Together they cover six roles (Customer, Administrator, Manager, Cashier, Waiter, and Kitchen Staff ).
 
-Identity of every user is a row in `customer` or `staff` plus a PHP session. Staff accounts are created only by an Administrator.
+| User type | Roles included | Description |
+|---|---|---|
+| **Customers** | Customer | Restaurant guests who register, view the menu, order food and reserve tables |
+| **Restaurant staff** | Cashier, Waiter, Kitchen Staff | Employees who handle the daily service: payments, floor and reservations, and food preparation |
+| **Restaurant administrators** | Administrator, Manager | Employees who manage and supervise the restaurant and its system data |
 
-Note on job titles: in the application, **Staff** covers the waiter / counter staff and **Administrator** covers the restaurant manager. The Activity 2 job titles (Waiter, Cashier, Kitchen Staff, Manager) are not separate roles in the code or the database, because `staff.role` accepts only `admin` and `staff`.
+Customers are stored in the `customer` table. Restaurant staff and restaurant administrators are stored in the `staff` table; their job title is in `staff.role`.
 
 ## 2. Roles and responsibilities
 
-| # | Role | Responsibilities |
-|---|---|---|
-| 1 | **Customer** | Register and log in; view the menu; place food orders; reserve tables; follow own order and reservation status; cancel own pending order or reservation; edit own profile |
-| 2 | **Staff** | View all orders, reservations and payments; update order status; update reservation status; record and update payments; change table status; mark menu items available or unavailable |
-| 3 | **Administrator** | Everything Staff can do, plus: create, edit and delete menu items and tables; delete reservations; list customers (no password hashes); create, edit and delete staff accounts |
+| # | Role | User type | Stored in | Who | Responsibilities |
+|---|---|---|---|---|---|
+| 1 | **Customer** | Customers | table `customer` (self-registered) | Restaurant guest | Register and log in; view the menu; place food orders; reserve tables; follow own order and reservation status; keep own profile up to date |
+| 2 | **Administrator** | Restaurant administrators | `staff.role = 'Administrator'` | Restaurant administrator | Full management of menu items, tables, orders, reservations, payments and staff accounts |
+| 3 | **Manager** | Restaurant administrators | `staff.role = 'Manager'` | Manager | Supervises daily operations: orders, reservations, menu and table updates, payments, reports |
+| 4 | **Cashier** | Restaurant staff | `staff.role = 'Cashier'` | Counter staff | Records and updates payments; views orders |
+| 5 | **Waiter** | Restaurant staff | `staff.role = 'Waiter'` | Staff | Handles reservations and table status; follows orders until they are served |
+| 6 | **Kitchen Staff** | Restaurant staff | `staff.role = 'Kitchen Staff'` | Kitchen | Views active orders and updates their preparation status; marks menu items available or unavailable |
 
 ## 3. Features each role can access
 
-Legend: **Y** = allowed, **Own** = only the person's own records, **–** = not allowed.
+Legend: **Y** = allowed, **Own** = only the person's own records, **View** = read only, **–** = not allowed.
+The features follow the 12 features of the Activity 2 blueprint.
 
-| Feature | Customer | Staff | Administrator |
-|---|---|---|---|
-| Register | Y | – | – |
-| Log in | Y (`/login`) | Y (`/staff/login`) | Y (`/staff/login`) |
-| View menu, search, item details | Y | Y | Y |
-| Place an order online | Y | – | – |
-| View order status | Own | All | All |
-| Update order status | Cancel own pending order | Y (any valid status) | Y |
-| Make a reservation | Y | – | – |
-| View reservation status | Own | All | All |
-| Update reservation status | Cancel own | Y | Y |
-| Delete a reservation | – | – | Y |
-| Create / edit menu items | – | – | Y |
-| Mark menu item available / unavailable | – | Y | Y |
-| Delete menu items | – | – | Y |
-| Create / edit / delete restaurant tables | – | – | Y |
-| Change table status | – | Y | Y |
-| Record and update payments | Pending payment created automatically at checkout | Y | Y |
-| View customer list | Own profile (edit) | – | Y (no password) |
-| Manage staff accounts | – | – | Y |
-| Dashboard summary | – | Y | Y |
+| Feature | Customer | Administrator | Manager | Cashier | Waiter | Kitchen Staff |
+|---|---|---|---|---|---|---|
+| Register / log in | Register + log in | Log in | Log in | Log in | Log in | Log in |
+| View menu, search, item details | Y | Y | Y | Y | Y | Y |
+| Place an order online | Y | – | – | – | – | – |
+| View order status | Own | All | All | View | View | Active orders |
+| Update order status | Cancel own pending order | Y | Y | – | Y (served / completed) | Y (to preparing) |
+| Check table availability | Y | Y | Y | View | Y | – |
+| Make a reservation | Y | Y | Y | – | Y | – |
+| View reservation status | Own | All | All | View | All | – |
+| Update / cancel a reservation | Cancel own | Y | Y | – | Y | – |
+| Manage menu items | View | Add, edit, delete | Add, edit | View | View | Availability only |
+| Manage restaurant tables | View availability | Add, edit, delete | Edit | View | Update status | – |
+| Record and manage payments | View own | Y | Y | Y | – | – |
+| View customer records | Own profile (edit) | View (no password) | View (no password) | – | – | – |
+| Manage staff accounts | – | Y | – | – | – | – |
+| Sales and summary reports | – | Y | Y | – | – | – |
 
 ## 4. Data each role can access
 
-C = create, R = read, U = update, D = delete. All operations pass through the single runtime account (see section 5); the role restrictions below are enforced by the application.
+C = create (INSERT), R = read (SELECT), U = update, D = delete.
 
-| Table | Customer | Staff | Administrator |
-|---|---|---|---|
-| `customer` | C (register), R/U own | – | R (list, no password) |
-| `staff` | – | R (own login) | C R U D |
-| `menu_item` | R | R, U (availability) | C R U D |
-| `restaurant_table` | R (availability) | R, U (status) | C R U D |
-| `orders` | C, R own, U own (cancel) | R U | R U |
-| `order_item` | C, R own | R | R |
-| `payment` | C (pending, at checkout), R own | C R U | C R U |
-| `reservation` | C, R own, U own (cancel) | R U (status) | R U D |
+| Table | Customer | Administrator | Manager | Cashier | Waiter | Kitchen Staff |
+|---|---|---|---|---|---|---|
+| `customer` | C, R/U own | R | R | – | – | – |
+| `staff` | – | C R U D | R (own login) | R (own login) | R (own login) | R (own login) |
+| `menu_item` | R | C R U D | C R U | R | R | R, U (availability) |
+| `restaurant_table` | R | C R U D | R U | R | R, U (status) | – |
+| `orders` | C, R/U own | R U | R U | R | R U | R U |
+| `order_item` | C, R own | R | R | R | R | R |
+| `payment` | R own | C R U | C R U | C R U | – | – |
+| `reservation` | C, R/U own | C R U | C R U | R | C R U | – |
 
 Notes:
 
-* No role deletes `orders`, `order_item`, `payment` or `customer` records. Cancelling or voiding is a status change (an `UPDATE`). Only an Administrator deletes `reservation`, `menu_item`, `restaurant_table` and `staff` rows.
-* `customer.password` and `staff.password` hold password hashes. Only the login code reads them; no screen displays them.
-* "Own" means the application filters by the logged-in customer (for example `WHERE customer_id = ?` with the session customer id).
+* No role deletes `orders`, `order_item`, `payment`, `customer` or `reservation` records. Business history is kept; cancelling or voiding is a status change (an `UPDATE`).
+* `customer.password` and `staff.password` hold password hashes. Only the login code reads them; no screen or report displays them.
+* "Own" means the application must filter by the logged-in customer (for example `WHERE customer_id = :session_customer`).
+* The detailed access in sections 3 and 4 is the group's proposed access policy; confirm it against the final application code.
