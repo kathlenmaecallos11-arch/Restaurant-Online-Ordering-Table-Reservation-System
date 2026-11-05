@@ -12,7 +12,6 @@ The goal is to prove that every database account has only the privileges it need
 1. **Automatic test matrix:** `04_verify_privileges.sql` is run as `postgres`. It becomes each group role with `SET LOCAL ROLE`, tries one statement, reports `ALLOWED` or `DENIED`, and always rolls back, so no data changes.
 2. **Real-login tests:** We log in with `psql` as each real account. `SET ROLE` cannot test login or `CONNECT`, so this part is needed.
 
-*Passwords were typed at hidden prompts and are not shown in any screenshot.*
 
 ---
 
@@ -62,7 +61,7 @@ The goal is to prove that every database account has only the privileges it need
 
 **Summary:** 26 PASS, 0 FAIL.
 
-![Automatic Test Matrix](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/testmatrix.png)
+
 
 ---
 
@@ -72,9 +71,6 @@ The goal is to prove that every database account has only the privileges it need
 * Each login account is a member of exactly one group role. The group roles also hold the built-in roles `pg_monitor` (maint, admin), `pg_maintain` (maint) and `pg_read_all_data` (backup).
 * The effective table privilege matrix shows that only `rors_runtime_grp` can insert or update the application tables, and only `rors_runtime_grp` has `DELETE` on `menu_item` and `reservation`. `rors_readonly_grp` has no access to `customer`.
 * `PUBLIC` privileges left on tables in `public`: 0 rows.
-
-![Role Attributes](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rolesattributes.png)
-![Role Memberships](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rolesprivilege.png)
 
 ---
 
@@ -89,7 +85,6 @@ The goal is to prove that every database account has only the privileges it need
 | `DELETE FROM reservation WHERE false;` | Allowed | `DELETE 0` | PASS |
 | `\c postgres rors_app` | Denied (least privilege) | Connected to database "postgres" | **FAIL - Finding 1** |
 
-![rors_app real login](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_app.png)
 
 ### 5.2 rors_report
 | Command | Expected | Actual | Result |
@@ -97,7 +92,6 @@ The goal is to prove that every database account has only the privileges it need
 | `SELECT * FROM v_customer_directory LIMIT 3;` | Allowed | 3 rows, no password column | PASS |
 | `SELECT password FROM customer LIMIT 1;` | Denied | `permission denied for table customer` | PASS |
 
-![rors_report real login](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_report.png)
 
 ### 5.3 rors_maint
 *(The first login attempt used a wrong password and was rejected (`FATAL: password authentication failed`). The second attempt was correct.)*
@@ -107,7 +101,6 @@ The goal is to prove that every database account has only the privileges it need
 | `SELECT * FROM customer LIMIT 1;` | Denied | `permission denied for table customer` | PASS |
 | `VACUUM ANALYZE menu_item;` | Allowed | `VACUUM` | PASS |
 
-![rors_maint real login](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_maint.png)
 
 ### 5.4 rors_backup
 | Command | Expected | Actual | Result |
@@ -115,7 +108,6 @@ The goal is to prove that every database account has only the privileges it need
 | `SELECT customer_id, first_name FROM customer LIMIT 1;` | Allowed | 1 row | PASS |
 | `DELETE FROM orders WHERE false;` | Denied | `permission denied for table orders` | PASS |
 
-![rors_backup real login](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_backup.png)
 
 ### 5.5 rors_dba
 | Command | Expected | Actual | Result |
@@ -124,7 +116,6 @@ The goal is to prove that every database account has only the privileges it need
 | `DROP TABLE public.dba_scratch;` | Allowed | `DROP TABLE` | PASS |
 | `CREATE DATABASE should_fail;` | Denied | `permission denied to create database` | PASS |
 
-![rors_dba real login](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rows_dba.png)
 
 ---
 
