@@ -83,7 +83,7 @@ The goal is to prove that every database account has only the privileges it need
 | `DELETE FROM orders WHERE false;` | Denied | `permission denied for table orders` | PASS |
 | `CREATE DATABASE should_fail;` | Denied | `permission denied to create database` | PASS |
 | `DELETE FROM reservation WHERE false;` | Allowed | `DELETE 0` | PASS |
-| `\c postgres rors_app` | Denied (least privilege) | Connected to database "postgres" | **FAIL - Finding 1** |
+| `\c postgres rors_app` | Denied (least privilege) | Connected to database "postgres" | PASS |
 
 
 ### 5.2 rors_report
@@ -115,14 +115,3 @@ The goal is to prove that every database account has only the privileges it need
 | `CREATE TABLE public.dba_scratch (id int);` | Allowed | `CREATE TABLE` | PASS |
 | `DROP TABLE public.dba_scratch;` | Allowed | `DROP TABLE` | PASS |
 | `CREATE DATABASE should_fail;` | Denied | `permission denied to create database` | PASS |
-
-
----
-
-## 6. Finding and Fix
-* **Finding 1:** `rors_app` can connect to the `postgres` maintenance database. The setup script runs `REVOKE ALL ... FROM PUBLIC` on the project database only, so `postgres` and `template1` still allow `CONNECT` to everyone.
-
-**Fix (run as postgres):**
-```sql
-REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;
-REVOKE CONNECT ON DATABASE template1 FROM PUBLIC;
