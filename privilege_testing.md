@@ -1,69 +1,51 @@
 # Privilege Testing Results
 
-**Project Name:** Restaurant Online Ordering & Table Reservation System  
-**Database Name:** `grp_binarysisters_projectdb`  
-**Date:** November 2026  
+
+## 1. Database roles & attributes verification 
+The database environment was verified to ensure that all standard roles (`g03_*`, `rors_*`) are properly configured and unnecessary personal roles are cleaned up
+
+### Role list (\du)
+![Role List](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/roles.png)
+
+### Role attributes & connection limits
+![Role Attributes](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rolesattributes.png)
+
+### Role memberships & table privilege matrix
+![Role Memberships](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rolesprivilege.png)
 
 ---
 
-## 1. Database Roles & Attributes Verification (S1 / S2)
-The database environment was verified to ensure that all standard roles (`g03_*`, `rors_*`) are properly configured and unnecessary personal roles are cleaned up.
+## 2. Interactive role login & privilege enforcement tests
+Manual connection and query tests were performed using `\c` to verify that each user account complies with its assigned permissions and restrictions[cite: 22].
 
-### Role List (`\du`)
-![Role List Verification](./evidence/Screenshot_2026-11-05_024014.png)
+### 2.1 Database administrator (rors_dba)
+* **Test:** Can create/drop temporary tables, but restricted from creating new databases[cite: 22].
+![Rors DBA Test](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rows_dba.png)
 
-### Role Attributes & Connection Limits
-![Role Attributes](./evidence/Screenshot(345).png)
+### 2.2 Backup role (rors_backup)
+* **Test:** Can read table data (`SELECT`), but cannot modify or delete data[cite: 22].
+![Rors Backup Test](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_backup.png)
 
-### Role Memberships & Table Privilege Matrix
-![Role Memberships and Matrix](./evidence/Screenshot(346).png)
+### 2.3 Maintenance role (rors_maint)
+* **Test:** Can perform maintenance tasks like `VACUUM`, but blocked from direct `SELECT` queries on restricted tables[cite: 22].
+![Rors Maint Test](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_maint.png)
 
----
+### 2.4 Reporting role (rors_report)
+* **Test:** Can access reporting views, but restricted from reading sensitive columns (e.g., passwords)[cite: 22].
+![Rors Report Test](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_report.png)
 
-## 2. Interactive Role Login & Privilege Enforcement Tests
-
-Manual connection and query tests were performed using `\c` to verify that each user account complies with its assigned permissions and restrictions.
-
-### 1. Database Administrator (`rors_dba`)
-- **Test:** Can create/drop temporary tables, but restricted from creating new databases.
-- **Evidence:**
-![rors_dba test](./evidence/Screenshot_2026-11-05_082010.png)[cite: 12]
-
-### 2. Backup Role (`rors_backup`)
-- **Test:** Can read table data (`SELECT`), but cannot modify or delete data.
-- **Evidence:**
-![rors_backup test](./evidence/Screenshot_2026-11-05_081846.png)[cite: 13]
-
-### 3. Maintenance Role (`rors_maint`)
-- **Test:** Can perform maintenance tasks like `VACUUM`, but blocked from direct SELECT queries on restricted tables.
-- **Evidence:**
-![rors_maint test](./evidence/Screenshot_2026-11-05_081831.png)[cite: 14]
-
-### 4. Reporting Role (`rors_report`)
-- **Test:** Can access reporting views, but restricted from reading sensitive columns (e.g., passwords).
-- **Evidence:**
-![rors_report test](./evidence/Screenshot_2026-11-05_080757.png)[cite: 15]
-
-### 5. Application Role (`rors_app`)
-- **Test:** Full transactional access on allowed tables, blocked from restricted deletions and database creation.
-- **Evidence:**
-![rors_app test](./evidence/Screenshot_2026-11-05_080546.png)[cite: 16]
+### 2.5 Application role (rors_app)
+* **Test:** Full transactional access on allowed tables, blocked from restricted deletions and database creation[cite: 22].
+![Rors App Test](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/rors_app.png)
 
 ---
 
-## 3. Automated Security Verification Matrix
-
+## 3. Automated security verification matrix
 Automated verification scripts (`04_verify_privileges.sql`) tested all permissions across operational roles.
 
-- **Total Tests Executed:** 26[cite: 5]
-- **Passed:** 26[cite: 5]
-- **Failed:** 0[cite: 5]
+* **Total tests executed:** 26
+* **Passed:** 26[cite: 22]
+* **Failed:** 0[cite: 22]
 
 ### Test Matrix Execution Logs
-![Test Matrix Part 1](./evidence/Screenshot(344).png)[cite: 5]
-![Test Matrix Part 2](./evidence/Screenshot(343).png)[cite: 6]
-
----
-
-## 4. Conclusion
-All security configurations, access control policies, privilege matrices, and role restrictions successfully passed evaluation with a **100% PASS rate (26/26)**[cite: 5]. The database enforces least-privilege principles across all operational user accounts.
+![Test Matrix](https://raw.githubusercontent.com/kathlenmaecallos11-arch/Restaurant-Online-Ordering-Table-Reservation-System/main/evidence/testmatrix.png)
