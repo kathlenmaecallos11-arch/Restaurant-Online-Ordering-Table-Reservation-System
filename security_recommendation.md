@@ -17,7 +17,7 @@
 
 | # | Priority | Finding | Why it matters | Recommendation |
 |---|---|---|---|---|
-| 1 | High | `rors_app` can connect to the `postgres` maintenance database (`evidence/rors_app.png`). `REVOKE ... FROM PUBLIC` was only done on the project database, so `postgres` and `template1` still allow `CONNECT` to everyone. | An application account should only reach its own database. Extra access gives an attacker more to explore (for example role names and other database names). | Run as `postgres`: `REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;` and `REVOKE CONNECT ON DATABASE template1 FROM PUBLIC;` (the `postgres` superuser is not affected). Repeat the test. Then add this step to `02_grants.sql`, or document it as an accepted risk if the group decides to keep it. |
+| 1 | High (Resolved) | `rors_app` could previously connect to the `postgres` maintenance database (`evidence/rors_app.png`). `REVOKE ... FROM PUBLIC` was only done on the project database, so `postgres` and `template1` still allowed `CONNECT` to everyone. | An application account should only reach its own database. Extra access gives an attacker more to explore (for example role names and other database names). | **FIXED:** Executed `REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;` and `REVOKE CONNECT ON DATABASE template1 FROM PUBLIC;` as superuser. Real-login tests now return permission denied as expected. Added this step to `02_grants.sql`. |
 | 2 | High | The public sample passwords are weak and predictable (`Admin123!`, `Staff123!`, `Password123!`; the other accounts use full name + `@123`). They are written in `README.md` and in the seed file. | Anyone who reads the repository knows the admin login. This is fine for local testing only. | Never deploy the seed data as it is. On any shared or hosted copy, change or remove all sample accounts before use, and remove the credentials table from the README. |
 | 3 | High | There is no limit on failed logins (`/login` and `/staff/login`) and the password rule is only "at least 8 characters". | Passwords can be guessed by trying many times, and the staff login controls the admin pages. | Add a failed-attempt limit per email and IP (for example 5 tries, then a short lock). Raise the password rule (longer minimum, block common passwords). Keep the same "Incorrect email or password." message. |
 | 4 | Medium | One database account (`rors_app`) serves customers, staff and administrators. It can `INSERT`, `UPDATE` and `DELETE` on `staff`, including the `role` and `password` columns. | The database cannot tell a customer request from an admin request. A bug such as SQL injection or a broken access check in the PHP code could let an attacker create an admin or delete staff. | Short term: keep all role checks in `require_staff()` and review every new route. Longer term: use a second login for admin-only actions, or use views, column-level grants or row-level security so the customer part of the app cannot touch `staff`. |
@@ -33,9 +33,7 @@
 
 ## 3. Suggested order of work
 
-1. Items 1 and 12: quick database fixes, then run the tests again and take new screenshots.
+1. **Item 1 (Done) & Item 12:** Item 1 (database connection restriction) is fully resolved and verified. Next, address Item 12 (missing `03_set_passwords.psql` or update setup script), then run the tests again and take new screenshots.
 2. Items 2 and 3: remove or change sample credentials and add a login limit before any real use.
 3. Items 4 to 9: plan for the next iteration of the project.
 4. Items 10, 11 and 13: improve when time allows.
-*No passwords or secrets are included in this document.*
-
