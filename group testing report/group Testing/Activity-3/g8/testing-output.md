@@ -17,9 +17,9 @@
 
 ## 2. Issues Found
 1. **Missing Environment Configuration (`.env`):**
-   - The repository lacks a pre-configured `.env` file out-of-the-box, causing the PowerShell setup script (`setup.ps1`) to halt and throw a `Missing .env. Run: Copy-Item .env.example .env` exception[cite: 12].
+   - The repository lacks a pre-configured `.env` file out-of-the-box, causing the PowerShell setup script (`setup.ps1`) to halt and throw a `Missing .env. Run: Copy-Item .env.example .env` exception.
 2. **Database Not Automatically Created:**
-   - Executing connection queries or running scripts via specific user accounts (`canteen_admin`) results in a fatal error because the `canteen_db` database does not exist initially and must be created manually[cite: 10, 11, 12].
+   - Executing connection queries or running scripts via specific user accounts (`canteen_admin`) results in a fatal error because the `canteen_db` database does not exist initially and must be created manually.
 
 ---
 
@@ -28,9 +28,9 @@
 | Step / Test Case | Result | Remarks / Notes |
 | :--- | :--- | :--- |
 | **Repository Clone** | **Success** | Successfully cloned from GitHub. |
-| **Role Creation Scripts** | **Success** | Successfully executed `01-create-roles.sql` and `02-role-memberships.sql` via `psql`[cite: 12]. |
-| **Environment Setup** | **Some Issues** | Halted initially due to missing `.env` configuration file[cite: 12]. |
-| **Database Connection & Initialization** | **Failed / Some Issues** | Encountered fatal connection errors (`database "canteen_db" does not exist`) when connecting before manual database creation[cite: 10, 11, 12]. |
+| **Role Creation Scripts** | **Success** | Successfully executed `01-create-roles.sql` and `02-role-memberships.sql` via `psql`. |
+| **Environment Setup** | **Some Issues** | Halted initially due to missing `.env` configuration file. |
+| **Database Connection & Initialization** | **Failed / Some Issues** | Encountered fatal connection errors (`database "canteen_db" does not exist`) when connecting before manual database creation. |
 
 ---
 
