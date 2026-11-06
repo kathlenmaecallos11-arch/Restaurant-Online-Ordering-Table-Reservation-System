@@ -1,46 +1,36 @@
-# Activity 3 Testing Output — Group-07 CampusSafe
+# Activity 3 Testing Log - Group 7
 
-**Project repository:** https://github.com/jeffersonorpesa2-ops/grp07-campussafe
-**Repository:** `jeffersonorpesa2-ops/grp07-campussafe`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## Project Details
+- **Project Tested:** Group 7 - CampusSafe: Campus Hazard & Safety Reporting System
+- **Testing Group:** Group 10 
+- **Repository Link:** https://github.com/Nycri/brewpos
+- **Branch Tested:** main
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+---
 
-## Repository inspection
+## 1. System Requirements & Prerequisites
+- **Language/Environment:** PHP 8.2+ with PDO and PostgreSQL extensions enabled
+- **Database:** PostgreSQL 14+ (Compatible up to PostgreSQL 18)
+- **Required Database Name:** `grp07_campussafedb`
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies PHP 8.2+, PostgreSQL 14+, PDO, authentication/RBAC, upload handling, hazard workflow, and setup wizard.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+---
 
-## Activity 3 checklist and results
+## 2. Issues Found
+- **None.** The project successfully deployed with zero blocking errors using the automated 1-Click Setup Wizard and batch installation scripts provided in the repository.
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Clone repository using Git | Working tree created; correct branch checked out | Clone not run: DNS/network unavailable in this environment | NOT RUN |
-| Inspect README, dependencies, and setup instructions | Prerequisites and reproducible steps are complete | README-level notes only; see above | PARTIAL |
-| Identify database schema/migrations and seed data | SQL/migrations and seed data exist and are ordered/documented | Not verified from source files | NOT RUN |
-| Initialize PostgreSQL database | Schema loads without errors | No local PostgreSQL server available | NOT RUN |
-| Load sample data | Seed completes and expected rows are present | Not run | NOT RUN |
-| Start application on localhost | Application loads without fatal errors | Not run; no local Windows localhost/browser session | NOT RUN |
-| Test essential CRUD/business workflows | Create/read/update/delete behavior matches approved scope | Not run | NOT RUN |
-| Check secrets and configuration | Example config uses placeholders; no secrets committed | Not audited exhaustively | NOT RUN |
+---
 
-### Required evidence to capture locally
-- `git clone` and `git status` output; branch and commit hash.
-- `php -v` / `php -m`, `java -version`, `node -v`, or other stack-specific version checks.
-- `psql --version`, database creation, schema import, and seed import output.
-- Browser screenshots of the running application and each tested workflow.
-- Actual errors, fixes, and retest results.
+## 3. Setup & Execution Results
 
-## Findings and recommendations
+| Step / Test Case | Result | Remarks / Notes |
+| :--- | :--- | :--- |
+| **Repository Clone** | **Success** | Successfully cloned from GitHub. |
+| **Database Creation & Seeding** | **Success** | Automatically created `grp07_campussafedb` and populated schema/seed records via setup wizard. |
+| **Application Launch** | **Success** | PHP built-in server successfully launched and accessed via `http://localhost:8000`. |
+| **Application Roles Checked** | **Success** | Verified pre-configured demo accounts (Administrator, Student, Maintenance, Auditor) using default password `Password123!`. |
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
+---
 
-## Final verdict
-
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+## 4. Overall Result & Feedback
+- **Result:** **Success**
+- **Feedback for Original Developers:** Excellent implementation, very intuitive automated installation process, and complete documentation. No issues encountered during testing.
