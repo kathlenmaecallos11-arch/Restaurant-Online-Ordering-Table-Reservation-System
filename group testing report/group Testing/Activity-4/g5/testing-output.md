@@ -3,7 +3,7 @@
 ## 1. Project Details
 * **Project Tested:** Group 5 - PUP-SPOT
 * **Testing Group:** Group 10
-* **Repository Link:** https://github.com/Jepheg/PUP-SPOT.git
+* **Repository Link:** https://github.com/grp05-dba/grp05_lostandfound
 * **Branch Tested:** main
 
 ## 2. System Requirements & Prerequisites
