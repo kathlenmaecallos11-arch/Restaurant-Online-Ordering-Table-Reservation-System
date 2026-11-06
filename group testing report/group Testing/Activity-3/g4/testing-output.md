@@ -17,8 +17,8 @@
 
 ## 3. Issues Found
 1. **Maven Wrapper / JAVA_HOME Environment Blocker:**
-   - Executing the startup command `.\mvnw.cmd spring-boot:run` triggers an error stating `The JAVA_HOME environment variable is not defined correctly`[cite: 3].
-   - Even after applying the troubleshooting commands and manual environment path overrides outlined in the repository's documentation, the local Java runtime failed to launch the application server[cite: 3].
+   - Executing the startup command `.\mvnw.cmd spring-boot:run` triggers an error stating `The JAVA_HOME environment variable is not defined correctly`.
+   - Even after applying the troubleshooting commands and manual environment path overrides outlined in the repository's documentation, the local Java runtime failed to launch the application server.
 
 ---
 
@@ -26,11 +26,11 @@
 
 | Step / Test Case | Result | Remarks / Notes |
 | :--- | :--- | :--- |
-| **Repository Clone** | Success | Successfully cloned from GitHub[cite: 3]. |
-| **Database Creation** | Success | Created `grp_brewposdb` in PostgreSQL via pgAdmin / psql[cite: 3]. |
-| **SQL Script Execution** | Success | Schema, seed data, and role scripts executed without errors[cite: 3]. |
-| **Maven & JDK Verification** | Failed | Executing `.\mvnw.cmd spring-boot:run` failed due to unresolved `JAVA_HOME` environment variable issues[cite: 3]. |
-| **Application Run** | Blocked | Database setup is complete, but unable to launch the POS web interface due to build execution failure[cite: 3]. |
+| **Repository Clone** | Success | Successfully cloned from GitHub. |
+| **Database Creation** | Success | Created `grp_brewposdb` in PostgreSQL via pgAdmin / psql. |
+| **SQL Script Execution** | Success | Schema, seed data, and role scripts executed without errors. |
+| **Maven & JDK Verification** | Failed | Executing `.\mvnw.cmd spring-boot:run` failed due to unresolved `JAVA_HOME` environment variable issues. |
+| **Application Run** | Blocked | Database setup is complete, but unable to launch the POS web interface due to build execution failure. |
 
 ---
 
