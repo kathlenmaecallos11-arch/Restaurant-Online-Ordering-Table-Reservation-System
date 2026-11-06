@@ -1,46 +1,41 @@
-# Activity 3 Testing Output — Group-05 PUP-SPOT Lost-and-Found
+# Activity 3 Testing Log - Group 5
 
-**Project repository:** https://github.com/grp05-dba/grp05_lostandfound
-**Repository:** `grp05-dba/grp05_lostandfound`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## 1. Project Details
+- **Project Tested:** Group 5 - PUP-SPOT: Campus Lost and Found
+- **Testing Group:** Group 10
+- **Repository Link:** https://github.com/grp05-dba/grp05_lostandfound
+- **Branch Tested:** main
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+---
 
-## Repository inspection
+## 2. System Requirements & Prerequisites
+- **Language/Environment:** PHP 8.0 or later
+- **Database:** PostgreSQL (`grp05_lostandfounddb`)
+- **Required Extensions:** `pdo_pgsql`, `pgsql`
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies PHP 8+, PostgreSQL, pdo_pgsql/pgsql, SQL schema/seed/role scripts, and optional SMS/email integrations.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+---
 
-## Activity 3 checklist and results
+## 3. Issues Found
+1. **PHP Runtime & PATH Environment Blocker:**
+   - Executing the required version and extension checks from Step 3.1 of the README (`php -v` and `php -m`) fails with `php : The term 'php' is not recognized as the name of a cmdlet, function, script file, or operable program`[cite: 2, 3].
+   - Because PHP is not installed or missing from the system PATH, local application server execution (`php -S 127.0.0.1:8000` / `php -S 127.0.0.1:8001`) could not be initiated[cite: 2].
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Clone repository using Git | Working tree created; correct branch checked out | Clone not run: DNS/network unavailable in this environment | NOT RUN |
-| Inspect README, dependencies, and setup instructions | Prerequisites and reproducible steps are complete | README-level notes only; see above | PARTIAL |
-| Identify database schema/migrations and seed data | SQL/migrations and seed data exist and are ordered/documented | Not verified from source files | NOT RUN |
-| Initialize PostgreSQL database | Schema loads without errors | No local PostgreSQL server available | NOT RUN |
-| Load sample data | Seed completes and expected rows are present | Not run | NOT RUN |
-| Start application on localhost | Application loads without fatal errors | Not run; no local Windows localhost/browser session | NOT RUN |
-| Test essential CRUD/business workflows | Create/read/update/delete behavior matches approved scope | Not run | NOT RUN |
-| Check secrets and configuration | Example config uses placeholders; no secrets committed | Not audited exhaustively | NOT RUN |
+---
 
-### Required evidence to capture locally
-- `git clone` and `git status` output; branch and commit hash.
-- `php -v` / `php -m`, `java -version`, `node -v`, or other stack-specific version checks.
-- `psql --version`, database creation, schema import, and seed import output.
-- Browser screenshots of the running application and each tested workflow.
-- Actual errors, fixes, and retest results.
+## 4. Setup & Execution Results
 
-## Findings and recommendations
+| Step / Test Case | Result | Remarks / Notes |
+| :--- | :--- | :--- |
+| **Repository Clone** | Success | Successfully cloned from GitHub. |
+| **Database Creation** | Success | Created `grp05_lostandfounddb` in PostgreSQL via pgAdmin / psql. |
+| **SQL Script Execution** | Success | Schema (`schema.sql`), necessary data, and role creation scripts executed without errors. |
+| **PHP Driver Verification** | Failed | Executing `php -v` / `php -m` failed due to missing PHP installation or system PATH mapping[cite: 2, 3]. |
+| **Application Run** | Partial / Blocked | Database setup is complete, but unable to launch web interfaces (`127.0.0.1:8000` / `127.0.0.1:8001`) due to missing PHP CLI in PATH[cite: 2]. |
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
+---
 
-## Final verdict
-
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+## 5. Overall Result & Feedback
+- **Result:** Some Issues
+- **Feedback for Original Developers:**
+  1. Specify system `PATH` configuration requirements for PHP in the environment setup prerequisites section of the `README.md`.
+  2. Include instructions or wrapper scripts for evaluators testing on clean Windows workstations where PHP binaries are not mapped globally.
