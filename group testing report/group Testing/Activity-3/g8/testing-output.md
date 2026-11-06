@@ -1,46 +1,41 @@
-# Activity 3 Testing Output — Group-TBD Campus-Canteen
+# Activity 3 Testing Log - Campus-Canteen-Pre-Order-and-Queue-Management-System
 
-**Project repository:** https://github.com/EclipseChan/bwisIT-Solutions---Campus-Canteen-Pre-Order-and-Queue-Management-System
-**Repository:** `EclipseChan/bwisIT-Solutions---Campus-Canteen-Pre-Order-and-Queue-Management-System`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## Project Details
+- **Project Tested:** Campus-Canteen-Pre-Order-and-Queue-Management-System
+- **Testing Group:** Group 10 
+- **Repository Link:** https://github.com/EclipseChan/bwisIT-Solutions---Campus-Canteen-Pre-Order-and-Queue-Management-System.git
+- **Branch Tested:** main
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+---
 
-## Repository inspection
+## 1. System Requirements & Prerequisites
+- **Language/Environment:** PHP / PostgreSQL (PostgreSQL 14+)
+- **Database:** `canteen_db`
+- **Required Roles:** `canteen_admin`, `canteen_app`, `canteen_readonly`
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies Java 21, Spring Boot 3.4, PostgreSQL, React/Vite optional frontend, API smoke test, and explicit Activities 4–6 tester guidance. Group number is TBD in README.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+---
 
-## Activity 3 checklist and results
+## 2. Issues Found
+1. **Missing Environment Configuration (`.env`):**
+   - The repository lacks a pre-configured `.env` file out-of-the-box, causing the PowerShell setup script (`setup.ps1`) to halt and throw a `Missing .env. Run: Copy-Item .env.example .env` exception[cite: 12].
+2. **Database Not Automatically Created:**
+   - Executing connection queries or running scripts via specific user accounts (`canteen_admin`) results in a fatal error because the `canteen_db` database does not exist initially and must be created manually[cite: 10, 11, 12].
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Clone repository using Git | Working tree created; correct branch checked out | Clone not run: DNS/network unavailable in this environment | NOT RUN |
-| Inspect README, dependencies, and setup instructions | Prerequisites and reproducible steps are complete | README-level notes only; see above | PARTIAL |
-| Identify database schema/migrations and seed data | SQL/migrations and seed data exist and are ordered/documented | Not verified from source files | NOT RUN |
-| Initialize PostgreSQL database | Schema loads without errors | No local PostgreSQL server available | NOT RUN |
-| Load sample data | Seed completes and expected rows are present | Not run | NOT RUN |
-| Start application on localhost | Application loads without fatal errors | Not run; no local Windows localhost/browser session | NOT RUN |
-| Test essential CRUD/business workflows | Create/read/update/delete behavior matches approved scope | Not run | NOT RUN |
-| Check secrets and configuration | Example config uses placeholders; no secrets committed | Not audited exhaustively | NOT RUN |
+---
 
-### Required evidence to capture locally
-- `git clone` and `git status` output; branch and commit hash.
-- `php -v` / `php -m`, `java -version`, `node -v`, or other stack-specific version checks.
-- `psql --version`, database creation, schema import, and seed import output.
-- Browser screenshots of the running application and each tested workflow.
-- Actual errors, fixes, and retest results.
+## 3. Setup & Execution Results
 
-## Findings and recommendations
+| Step / Test Case | Result | Remarks / Notes |
+| :--- | :--- | :--- |
+| **Repository Clone** | **Success** | Successfully cloned from GitHub. |
+| **Role Creation Scripts** | **Success** | Successfully executed `01-create-roles.sql` and `02-role-memberships.sql` via `psql`[cite: 12]. |
+| **Environment Setup** | **Some Issues** | Halted initially due to missing `.env` configuration file[cite: 12]. |
+| **Database Connection & Initialization** | **Failed / Some Issues** | Encountered fatal connection errors (`database "canteen_db" does not exist`) when connecting before manual database creation[cite: 10, 11, 12]. |
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
+---
 
-## Final verdict
-
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+## 4. Overall Result & Feedback
+- **Result:** **Some Issues**
+- **Feedback for Original Developers:** 
+  1. Include a default `.env` template file or clear instructions in the README to copy `.env.example` before running setup scripts.
+  2. Ensure the database creation step (`CREATE DATABASE canteen_db;`) is automatically handled or explicitly documented prior to running role assignments and schema scripts.
