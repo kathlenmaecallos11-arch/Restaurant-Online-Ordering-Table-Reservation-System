@@ -1,46 +1,75 @@
-# Activity 3 Testing Output — Group-00 HabalGo
+# Activity 3 Testing Log
 
-**Project repository:** https://github.com/jeanaroyo/HabalGo
-**Repository:** `jeanaroyo/HabalGo`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## Project Details
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+- **Project Tested:** HabalGo
+- **Testing Group:** G10
+- **Repository Link:** [https://github.com/jeanaroyo/HabalGo.git](https://github.com/jeanaroyo/HabalGo.git)
+- **Branch Tested:** main
 
-## Repository inspection
+---
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies PHP 8.x + PostgreSQL 15+, DB grp00_habalgodb, schema.sql, sample data.sql, and PHP built-in server/XAMPP instructions.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+## 1. System Requirements & Prerequisites
 
-## Activity 3 checklist and results
+- **Programming Language:** PHP
+- **Database:** PostgreSQL 18.6
+- **PHP Version:** 8.0.30
+- **Database Name:** `grp00_habalgodb`
+- **Database Schema:** `habalgo`
+- **Required Environment:** XAMPP / PHP Built-in Development Server
+- **Required PHP Extensions:** `pdo_pgsql`, `pgsql`
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Clone repository using Git | Working tree created; correct branch checked out | Clone not run: DNS/network unavailable in this environment | NOT RUN |
-| Inspect README, dependencies, and setup instructions | Prerequisites and reproducible steps are complete | README-level notes only; see above | PARTIAL |
-| Identify database schema/migrations and seed data | SQL/migrations and seed data exist and are ordered/documented | Not verified from source files | NOT RUN |
-| Initialize PostgreSQL database | Schema loads without errors | No local PostgreSQL server available | NOT RUN |
-| Load sample data | Seed completes and expected rows are present | Not run | NOT RUN |
-| Start application on localhost | Application loads without fatal errors | Not run; no local Windows localhost/browser session | NOT RUN |
-| Test essential CRUD/business workflows | Create/read/update/delete behavior matches approved scope | Not run | NOT RUN |
-| Check secrets and configuration | Example config uses placeholders; no secrets committed | Not audited exhaustively | NOT RUN |
+---
 
-### Required evidence to capture locally
-- `git clone` and `git status` output; branch and commit hash.
-- `php -v` / `php -m`, `java -version`, `node -v`, or other stack-specific version checks.
-- `psql --version`, database creation, schema import, and seed import output.
-- Browser screenshots of the running application and each tested workflow.
-- Actual errors, fixes, and retest results.
+## 2. Issues Found
 
-## Findings and recommendations
+1. **Database Connection Failed**
+   - The local `.env` file uses `DB_PASSWORD`, while `config.php` expects `DB_PASS`. Additionally, the application does not automatically load the `.env` file. This initially caused a database connection failure.
+   - **Resolution:** Modified the local `config.php` to load the `.env` file using `parse_ini_file()` and corrected the variable name from `DB_PASSWORD` to `DB_PASS`. The database connection worked successfully afterward.
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
+---
 
-## Final verdict
+## 3. Setup & Execution Results
 
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+| Step / Test Case | Result | Remarks / Notes |
+|---|---|---|
+| Repository Clone | Success | Successfully cloned the HabalGo repository from GitHub. |
+| Database Creation | Success | Created `grp00_habalgodb` in PostgreSQL. |
+| Database Schema Restoration | Success | Successfully executed `schema.sql`. |
+| Sample Data Insertion | Success | Successfully executed `sample data.sql`. |
+| PHP Environment Setup | Success | Configured PHP 8.0.30 and the required PostgreSQL extensions. |
+| Database Connection | Success | Successfully connected the PHP application to PostgreSQL after correcting the configuration. |
+| Application Run | Success | Application opened using the PHP built-in development server. |
+| Customers Module | Success | Tested viewing, adding, editing, and deleting customer records. |
+| Vehicles Module | Success | Tested viewing, adding, editing, and deleting vehicle records. |
+| Bookings Module | Success | Tested viewing, adding, editing, and deleting booking records. |
+| Payments Module | Success | Tested viewing, adding, editing, and deleting payment records. |
+| Ratings & Feedbacks Module | Success | Tested viewing, adding, editing, and deleting ratings and feedback records. |
+| Primary Key Verification | Success | Verified primary keys across all eight database tables. The `driver_vehicle` table uses a composite primary key consisting of `driver_id` and `vehicle_id`, resulting in nine primary key columns. |
+| Foreign Key Verification | Success | Identified nine foreign key relationships across the database tables. |
+| Database Record Verification | Success | Successfully retrieved record counts from all eight database tables. |
+
+---
+
+## 4. Database Verification Results
+
+- **Total Tables:** 8
+- **Primary Key Columns:** 9
+- **Foreign Key Relationships:** 9
+- **Total Records:** 19 (at the time of verification)
+
+
+
+---
+
+## 5. Overall Result & Feedback
+
+- **Result:** Successful with additional testing recommended.
+
+### Feedback for Original Developers
+
+1. Ensure consistent database environment variable names between `.env.example` and `config.php` to prevent database connection issues.
+2. Consider implementing automatic `.env` file loading or providing clear setup instructions for configuring database credentials.
+3. Provide clearer documentation for database configuration and application setup to make local installation easier for future testers.
+
+The HabalGo application was successfully set up and executed in the local environment. The main pages loaded successfully after resolving the database configuration issue. 
