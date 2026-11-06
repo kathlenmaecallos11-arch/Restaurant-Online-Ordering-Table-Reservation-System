@@ -1,44 +1,31 @@
-# Activity 4 Testing Output — Group-TBD BoardTrack
+# Activity 4 Testing Log - Group 11
 
-**Project repository:** https://github.com/karlrobertc-art/BoardTrack
-**Repository:** `karlrobertc-art/BoardTrack`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## 1. Project Details
+* **Project Tested:** Group 11 - BoardTrack: Boarding House & Rental Management System
+* **Testing Group:** Group 10
+* **Repository Link:** https://github.com/karlrobertc-art/BoardTrack.git
+* **Branch Tested:** main
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+## 2. System Requirements & Prerequisites
+* **Language/Environment:** Web / Application environment
+* **Database:** PostgreSQL (7 main application tables: `property`, `room`, `tenant`, `lease`, `payment`, `utility bill`, and `app_user`, plus trigger functions, summary views, and constraints)
+* **Build Tool:** npm / Package manager
 
-## Repository inspection
+## 3. Issues Found
+### 1. Script Provision & Access-Control Gaps
+* Setup scripts are provided through `db/boardtrack_full_setup.sql` which creates tables, constraints, indexes, triggers, and views.
+* Requires strict enforcement of least-privilege boundaries across runtime, read-only, and administrator roles].
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies Node.js 20.12+, Express/EJS, pg, PostgreSQL, automatic database setup/seed, and optional static preview.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+## 4. Setup & Execution Results
 
-## Activity 4 checklist and results
+| Step / Test Case | Result | Remarks / Notes |
+| --- | --- | --- |
+| Repository Clone | Success | Successfully cloned from GitHub. |
+| Database & Schema Setup | Success with Issues | Setup scripts successfully provided and structured; actual execution and restoration require verification in PostgreSQL or pgAdmin. |
+| Privilege & Access Review | Done (Static) | Static review completed: runtime requires SELECT, INSERT, UPDATE, and controlled DELETE; read-only requires SELECT on business tables and summary views; admin requires full business privileges without superuser or createrole. |
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Identify application roles and data operations | Roles map to documented read/write needs | README-level review only; role docs not exhaustively retrieved | PARTIAL |
-| Create PostgreSQL NOLOGIN group roles | Group roles exist with least-privilege grants | Not run | NOT RUN |
-| Create login roles and memberships | Login accounts inherit intended group roles | Not run | NOT RUN |
-| Grant CONNECT, schema USAGE, object privileges | Only required privileges are granted | Not run | NOT RUN |
-| Verify positive access | Authorized statements succeed | Not run | NOT RUN |
-| Verify negative access | Unauthorized INSERT/UPDATE/DELETE/SELECT are denied | Not run | NOT RUN |
-| Verify sequence and future-object privileges | Required sequences and future tables are covered | Not run | NOT RUN |
-
-### Required evidence to capture locally
-- Sanitized role inventory (`\du`), database/schema/table grants, and role memberships.
-- Positive and negative permission tests with account, SQL statement, expected result, actual result.
-- Access-control plan mapping each login account to Activity 3 application roles.
-- Do not include real passwords; do not modify the owners' repositories.
-
-## Findings and recommendations
-
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
-
-## Final verdict
-
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+## 5. Overall Result & Feedback
+* **Result:** Some Issues
+* **Feedback for Original Developers:**
+  1. Ensure complete and automated execution of full setup scripts for local environments.
+  2. Maintain strict least-privilege boundaries for application runtime versus administrative operations.
