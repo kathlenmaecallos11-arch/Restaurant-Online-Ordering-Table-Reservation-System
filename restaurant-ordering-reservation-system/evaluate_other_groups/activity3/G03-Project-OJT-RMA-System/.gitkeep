@@ -1,1 +1,55 @@
+# Activity 3 Testing Log - Group 3
 
+## Project Details
+- **Project Tested:** Group 3 - Project-OJT-RMA-System
+- **Testing Group:** Group 10 (Mesa)
+- **Repository Link:** https://github.com/swvenz/Project-OJT-RMA-System.git
+- **Branch Tested:** main
+
+---
+
+## 1. System Requirements & Prerequisites
+- **Language/Environment:** Java
+- **Database:** PostgreSQL (PostgreSQL 18)
+- **Required Database Name:** `ojt_managementdb`
+
+---
+
+## 2. Issues Found
+
+1. **Binary Format Dump File (.sql):**
+   - The `OJT Database.sql` file is saved in **PostgreSQL custom binary dump format** (generated using `pg_dump`) rather than a plain text SQL script.
+   - It cannot be opened as a readable text file directly in VS Code (results in binary/encoding warning errors).
+
+2. **Missing PostgreSQL Roles during Restoration:**
+   - Restoring the dump file via CLI or `pg_restore` throws errors because the required database roles (`loan_admin_grp`, `loan_officer_grp`, and `auditor_grp`) do not exist in a fresh PostgreSQL setup.
+   - **Workaround:** Manually create these three roles in PostgreSQL before executing the restore.
+
+3. **pgAdmin GUI Compatibility Issues:**
+   - The pgAdmin 4 Query Tool encounters an internal `Request failed with status code 500` error when trying to access or query the database tabs.
+   - **Workaround:** Use the Command Line / VS Code Terminal (`pg_restore` and `psql`) instead of the pgAdmin web GUI.
+
+4. **Incomplete README & Build Instructions:**
+   - The README lacks clear, step-by-step instructions for CLI database initialization and running the Java application.
+
+---
+
+## 3. Setup & Execution Results
+
+| Step / Test Case | Result | Remarks / Notes |
+| :--- | :--- | :--- |
+| **Repository Clone** | **Success** | Successfully cloned from GitHub. |
+| **Database Creation** | **Success** | Created `ojt_managementdb` in PostgreSQL. |
+| **Database Restoration** | **Partial / Some Issues** | Failed with standard SQL tools; succeeded using `pg_restore` after manually creating the missing roles. |
+| **GUI Setup (pgAdmin)** | **Failed** | Encountered HTTP 500 internal server error in pgAdmin. |
+| **Application Run** | **Needs Feedback** | Requires additional CLI build and runtime verification. |
+
+---
+
+## 4. Overall Result & Feedback
+
+- **Result:** **Some Issues**
+- **Feedback for Original Developers:**
+  1. Provide the database initialization script in plain text SQL format (`.sql`) rather than a custom binary dump to ease setup without needing `pg_restore`.
+  2. Include the required role creation commands (`CREATE ROLE ...`) in the documentation or script.
+  3. Update the README with clear instructions on building and starting the Java application via terminal.
