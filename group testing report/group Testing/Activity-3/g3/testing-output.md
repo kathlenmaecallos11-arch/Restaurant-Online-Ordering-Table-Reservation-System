@@ -1,46 +1,55 @@
-# Activity 3 Testing Output — Group-02 OJT-Management-System
+# Activity 3 Testing Log - Group 3
 
-**Project repository:** https://github.com/swvenz/Project-OJT-RMA-System
-**Repository:** `swvenz/Project-OJT-RMA-System`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## Project Details
+- **Project Tested:** Group 3 - Project-OJT-RMA-System
+- **Testing Group:** Group 10 
+- **Repository Link:** https://github.com/swvenz/Project-OJT-RMA-System.git
+- **Branch Tested:** main
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+---
 
-## Repository inspection
+## 1. System Requirements & Prerequisites
+- **Language/Environment:** Java
+- **Database:** PostgreSQL (PostgreSQL 18)
+- **Required Database Name:** `ojt_managementdb`
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies OJT Management System; PostgreSQL database ojt_managementdb; says migrations and seed script are required. Framework/runtime details were not confirmed.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+---
 
-## Activity 3 checklist and results
+## 2. Issues Found
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Clone repository using Git | Working tree created; correct branch checked out | Clone not run: DNS/network unavailable in this environment | NOT RUN |
-| Inspect README, dependencies, and setup instructions | Prerequisites and reproducible steps are complete | README-level notes only; see above | PARTIAL |
-| Identify database schema/migrations and seed data | SQL/migrations and seed data exist and are ordered/documented | Not verified from source files | NOT RUN |
-| Initialize PostgreSQL database | Schema loads without errors | No local PostgreSQL server available | NOT RUN |
-| Load sample data | Seed completes and expected rows are present | Not run | NOT RUN |
-| Start application on localhost | Application loads without fatal errors | Not run; no local Windows localhost/browser session | NOT RUN |
-| Test essential CRUD/business workflows | Create/read/update/delete behavior matches approved scope | Not run | NOT RUN |
-| Check secrets and configuration | Example config uses placeholders; no secrets committed | Not audited exhaustively | NOT RUN |
+1. **Binary Format Dump File (.sql):**
+   - The `OJT Database.sql` file is saved in **PostgreSQL custom binary dump format** (generated using `pg_dump`) rather than a plain text SQL script.
+   - It cannot be opened as a readable text file directly in VS Code (results in binary/encoding warning errors).
 
-### Required evidence to capture locally
-- `git clone` and `git status` output; branch and commit hash.
-- `php -v` / `php -m`, `java -version`, `node -v`, or other stack-specific version checks.
-- `psql --version`, database creation, schema import, and seed import output.
-- Browser screenshots of the running application and each tested workflow.
-- Actual errors, fixes, and retest results.
+2. **Missing PostgreSQL Roles during Restoration:**
+   - Restoring the dump file via CLI or `pg_restore` throws errors because the required database roles (`loan_admin_grp`, `loan_officer_grp`, and `auditor_grp`) do not exist in a fresh PostgreSQL setup.
+   - **Workaround:** Manually create these three roles in PostgreSQL before executing the restore.
 
-## Findings and recommendations
+3. **pgAdmin GUI Compatibility Issues:**
+   - The pgAdmin 4 Query Tool encounters an internal `Request failed with status code 500` error when trying to access or query the database tabs.
+   - **Workaround:** Use the Command Line / VS Code Terminal (`pg_restore` and `psql`) instead of the pgAdmin web GUI.
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
+4. **Incomplete README & Build Instructions:**
+   - The README lacks clear, step-by-step instructions for CLI database initialization and running the Java application.
 
-## Final verdict
+---
 
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
+## 3. Setup & Execution Results
+
+| Step / Test Case | Result | Remarks / Notes |
+| :--- | :--- | :--- |
+| **Repository Clone** | **Success** | Successfully cloned from GitHub. |
+| **Database Creation** | **Success** | Created `ojt_managementdb` in PostgreSQL. |
+| **Database Restoration** | **Partial / Some Issues** | Failed with standard SQL tools; succeeded using `pg_restore` after manually creating the missing roles. |
+| **GUI Setup (pgAdmin)** | **Failed** | Encountered HTTP 500 internal server error in pgAdmin. |
+| **Application Run** | **Needs Feedback** | Requires additional CLI build and runtime verification. |
+
+---
+
+## 4. Overall Result & Feedback
+
+- **Result:** **Some Issues**
+- **Feedback for Original Developers:**
+  1. Provide the database initialization script in plain text SQL format (`.sql`) rather than a custom binary dump to ease setup without needing `pg_restore`.
+  2. Include the required role creation commands (`CREATE ROLE ...`) in the documentation or script.
+  3. Update the README with clear instructions on building and starting the Java application via terminal.
