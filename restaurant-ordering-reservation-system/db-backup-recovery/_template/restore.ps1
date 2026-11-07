@@ -14,10 +14,30 @@ param(
 $ErrorActionPreference = "Stop"
 $ev = Join-Path $PSScriptRoot "evidence"; New-Item -ItemType Directory -Force $ev | Out-Null
 $test = "${Db}_restore_test"
-if (-not $DumpFile) {
-    $DumpFile = (Get-ChildItem $BackupDir -Filter "${Db}_activity6_*.dump" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
+# MESA-INC4: never trust a backup file before its size and SHA-256 match evidence\backup-log.csv.
+$logCsv = Join-Path $ev "backup-log.csv"
+function Test-BackupFile([string]$Path) {
+    if (-not (Test-Path $Path)) { return $false }
+    if (-not (Test-Path $logCsv)) { Write-Warning "evidence\backup-log.csv not found: cannot verify $Path"; return $false }
+    $leaf = Split-Path $Path -Leaf
+    $row  = Import-Csv $logCsv | Where-Object { $_.file -eq $leaf } | Select-Object -Last 1
+    if (-not $row) { Write-Warning "$leaf is not recorded in backup-log.csv"; return $false }
+    $size = (Get-Item $Path).Length
+    $hash = (Get-FileHash $Path -Algorithm SHA256).Hash
+    if ([int64]$row.size_bytes -ne $size) { Write-Warning "REJECTED $leaf : size $size differs from logged $($row.size_bytes)"; return $false }
+    if ($row.sha256 -ne $hash)            { Write-Warning "REJECTED $leaf : SHA-256 differs from the logged value"; return $false }
+    & pg_restore --list $Path *> $null
+    if ($LASTEXITCODE -ne 0)              { Write-Warning "REJECTED $leaf : pg_restore --list cannot read the archive"; return $false }
+    Write-Host "VERIFIED $leaf (size and SHA-256 match the backup log)" -ForegroundColor Green
+    return $true
 }
-if (-not $DumpFile -or -not (Test-Path $DumpFile)) { throw "No backup file found. Run backup.ps1 first." }
+if ($DumpFile) {
+    if (-not (Test-BackupFile $DumpFile)) { throw "The backup file failed verification. Choose another file." }
+} else {
+    $candidates = Get-ChildItem $BackupDir -Filter "${Db}_activity6_*.dump" | Sort-Object LastWriteTime -Descending
+    foreach ($c in $candidates) { if (Test-BackupFile $c.FullName) { $DumpFile = $c.FullName; break } }
+}
+if (-not $DumpFile -or -not (Test-Path $DumpFile)) { throw "No VERIFIED backup file found. Run backup.ps1 first." }
 if ($test -eq $Db) { throw "Refusing to restore over the original database." }
 
 $secure = Read-Host -Prompt "Password of '$Admin'" -AsSecureString
