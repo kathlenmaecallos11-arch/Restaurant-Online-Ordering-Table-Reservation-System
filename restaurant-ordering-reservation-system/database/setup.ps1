@@ -52,12 +52,24 @@ try {
     }
     if (-not $SkipSeed) { Invoke-Sql $DbName (Join-Path $db "seeds\001_seed_data.sql") }
 
+    # MESA-INC1: a rebuild recreates the tables, so grants on the old tables are lost. If the roles already
+    # exist, re-apply the grants and fail loudly if the application role still cannot use the tables.
+    if (-not $WithRoles) {
+        $hasRoles = (& psql -h $PgHost -p $Port -U $AdminUser -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='rors_runtime_grp'")
+        if ("$hasRoles".Trim() -eq "1") {
+            Invoke-Sql $DbName (Join-Path $db "roles\02_grants.sql")
+            Invoke-Sql $DbName (Join-Path $db "roles\05_check_app_access.sql")
+        }
+    }
+
     if ($WithRoles) {
         Invoke-Sql "postgres" (Join-Path $db "roles\01_create_roles.sql")
         Invoke-Sql $DbName    (Join-Path $db "roles\02_grants.sql")
         Write-Host "`nNow choose a password for each login account (hidden prompts)." -ForegroundColor Yellow
         & psql -h $PgHost -p $Port -U $AdminUser -d postgres -f (Join-Path $db "roles\03_set_passwords.psql")
         Invoke-Sql $DbName (Join-Path $db "roles\04_verify_privileges.sql")
+        Invoke-Sql $DbName (Join-Path $db "roles\05_check_app_access.sql")
+        Invoke-Sql "postgres" (Join-Path $db "roles\06_verify_logins.sql")
     }
     Write-Host "`nDatabase '$DbName' is ready." -ForegroundColor Green
     Write-Host "Next: copy .env.example to .env, set DB_USER/DB_PASSWORD, then run: php -S localhost:8000 -t app/public"
