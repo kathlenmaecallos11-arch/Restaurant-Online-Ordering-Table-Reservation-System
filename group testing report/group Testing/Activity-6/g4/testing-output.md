@@ -1,45 +1,44 @@
-# Activity 6 Testing Output — Group-03 BrewPOS
+# Activity 6 Report: Group 4 - BrewPOS
 
-**Project repository:** https://github.com/Nycri/brewpos
-**Repository:** `Nycri/brewpos`  
-**Branch inspected:** `main` (default branch from repository metadata)  
-**Review date:** 2026-11-06  
-**Review mode:** Remote repository metadata + README-level review only.
+## 1. Project & Backup Overview
+- **Project Name:** BrewPOS
+- **Repository URL:** https://github.com/Nycri/brewpos
+- **Database Name:** `brewpos_db`
+- **Backup File Name:** `grp_brewposdb_activity6.dump`
+- **File Size:** Not recorded
+- **SHA-256 Checksum:** Not recorded
+- **Date & Time Created:** Not recorded
 
-> **Important execution limitation:** A real Git clone could not be completed in this execution environment because outbound DNS/network access to `github.com` was unavailable. No Git Bash session, Windows localhost, PostgreSQL server, application server, browser workflow, SQL command, maintenance operation, backup, or restore was executed. Therefore this file does not claim a PASS or successful runtime verification. Run the commands below on the group's Windows machine and replace every NOT RUN entry with actual captured output.
+## 2. Backup Creation & Archive Inspection
+- **Method Used:** Logical backup using `pg_dump` in custom archive format (`-Fc`), restored via `pg_restore`.
+- **Inspection Result (`pg_restore --list`):** BrewPOS uses PostgreSQL and has five documented database tables, but Group 4-specific Activity 6 backup evidence was unavailable.
+- **Status:** **Failed / Missing Evidence**
 
-## Repository inspection
+## 3. Restoration & Verification
+- **Test Database Target:** `brewpos_db_restore_test`
+- **Verification Steps:**
+  - Checksum verification could not be performed due to missing backup records.
+  - Object lists, row counts, and verification queries could not be executed because backup files and restoration logs were absent.
 
-- Public repository metadata was successfully retrieved through the connected GitHub integration.
-- Default branch: `main`.
-- README / project notes: README identifies Java 17 + Spring Boot + PostgreSQL, Maven Wrapper, schema/seed SQL, role documentation, and Activity 4–6 evidence folders. README claims are not treated as independently verified execution.
-- Source code, SQL files, migrations, environment templates, and tests were **not exhaustively inspected** in this pass.
+## 4. Access Control After Restore
+- **Roles Recreated:** Dedicated backup and administrative roles designed under Activity 4.
+- **Privileges Verified:** Unable to test against the restored environment due to missing backup artifacts.
+- **Access Control Status:** **No** (Verification data unavailable)
 
-## Activity 6 checklist and results
+## 5. Controlled Recovery Simulation
+- **Incident Simulated:** Controlled recovery path testing could not be completed for this project.
+- **Recovery Path:** Pending acquisition of valid backup files and test restoration logs.
+- **Status:** **Failed / Not Performed**
 
-| Test | Expected result | Actual result | Status |
-|---|---|---|---|
-| Backup plan | Database/objects, method, storage, access, RPO/RTO, retention, and role restoration documented | Not prepared against a running DB | NOT RUN |
-| Create logical backup (`pg_dump -Fc`) | Archive created without errors; size and SHA-256 recorded | Not run | NOT RUN |
-| Inspect archive (`pg_restore --list`) | Archive contents are readable | Not run | NOT RUN |
-| Restore to separate test database | Restore completes without modifying source DB | Not run | NOT RUN |
-| Verify restored objects and data | Tables, constraints, sequences, views, row counts, and sample queries match | Not run | NOT RUN |
-| Simulate controlled recovery incident | Disposable test data is recovered from verified backup | Not run | NOT RUN |
-| Recreate Activity 4 roles/grants | Required role memberships and privileges are restored and tested | Not run | NOT RUN |
+## 6. Limitations & Errors Encountered
+- **Status/Issues:** **Failed / Missing Evidence**
+- **Cause & Resolution:** 
+  - *Cause:* No error or warning recorded in the available Activity 6 evidence because no Group 4-specific backup and restoration test results were provided.
+  - *Resolution:* Obtain the actual backup files, record file size and SHA-256 checksum, verify the archive, and execute test restoration.
+  - *Additional System Note:* The project relies on application requirements/uploads that should also be tracked alongside database assets.
 
-### Required evidence to capture locally
-- Backup plan, exact sanitized commands, archive filename, file size, checksum, timestamp, and errors.
-- `pg_restore --list` output.
-- Restore target database name (must be separate/disposable), restore output, and object/row-count parity checks.
-- Recovery drill steps and verification. Never delete data from the source database.
-- Keep dump files outside Git; commit scripts and notes only.
+## 7. Feedback to Owners
+- **Key Finding:** The project uses PostgreSQL and has five documented database tables, but Group 4-specific Activity 6 backup evidence was unavailable.
+- **Recommendation:** Provide actual backup files, SHA-256 verification, archive inspection, and successful restoration evidence.
 
-## Findings and recommendations
 
-1. **Immediate:** Perform a real clone and local setup using Git Bash on the designated Windows workstation; this report is not a substitute for local execution.
-2. **Follow-up:** Complete the activity-specific checks above using the Activity 3 project documentation and Activity 4 least-privilege accounts.
-3. **Evidence integrity:** Save genuine terminal output and screenshots; never fabricate successful tests or expose credentials.
-
-## Final verdict
-
-**NOT VERIFIED — runtime testing pending.** Repository metadata is accessible, but this execution pass did not run the project. Update this report only with observed results.
