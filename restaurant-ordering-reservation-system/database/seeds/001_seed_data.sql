@@ -536,6 +536,9 @@ INSERT INTO customer (first_name, last_name, email, phone, password) VALUES
 
 COMMIT;
 
+-- MESA-INC3: refresh planner statistics right after a bulk load (autovacuum may not have run yet).
+ANALYZE;
+
 -- Quick check (expected: 51 / 10 / 50 / 20 / 60 / 167 / 56 / 50)
 SELECT (SELECT COUNT(*) FROM customer)         AS customers,
        (SELECT COUNT(*) FROM staff)            AS staff,
