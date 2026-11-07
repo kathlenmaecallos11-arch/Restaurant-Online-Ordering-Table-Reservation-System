@@ -30,11 +30,23 @@ fi
 for f in 001_create_tables 002_integrity_logic 003_views 004_indexes; do run "$DB" "$DIR/migrations/$f.sql"; done
 run "$DB" "$DIR/seeds/001_seed_data.sql"
 
+# MESA-INC1: a rebuild recreates the tables, so grants on the old tables are lost. If the roles already
+# exist, re-apply the grants and fail loudly if the application role still cannot use the tables.
+if [ "$WITH_ROLES" = 0 ]; then
+  HAS_ROLES="$(psql -h "$PGHOST_" -p "$PGPORT_" -U "$ADMIN" -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='rors_runtime_grp'")"
+  if [ "$HAS_ROLES" = "1" ]; then
+    run "$DB" "$DIR/roles/02_grants.sql"
+    run "$DB" "$DIR/roles/05_check_app_access.sql"
+  fi
+fi
+
 if [ "$WITH_ROLES" = 1 ]; then
   run postgres "$DIR/roles/01_create_roles.sql"
   run "$DB" "$DIR/roles/02_grants.sql"
   echo "Choose a password for each login account (hidden prompts)."
   psql -h "$PGHOST_" -p "$PGPORT_" -U "$ADMIN" -d postgres -f "$DIR/roles/03_set_passwords.psql"
   run "$DB" "$DIR/roles/04_verify_privileges.sql"
+  run "$DB" "$DIR/roles/05_check_app_access.sql"
+  run postgres "$DIR/roles/06_verify_logins.sql"
 fi
 echo "Database '$DB' is ready. Next: cp .env.example .env, edit it, then: php -S localhost:8000 -t app/public"
