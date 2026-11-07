@@ -55,3 +55,15 @@ WHERE current_setting('server_version_num')::int >= 170000
 ALTER ROLE rors_app SET statement_timeout = '30s';
 -- Reporting queries may run longer than web requests, but are still bounded.
 ALTER ROLE rors_report SET statement_timeout = '60s';
+
+
+-- MESA-INC5 prevention: an idle session must not keep a lock on orders (or any table) for long.
+--   idle_in_transaction_session_timeout ends a session that opened a transaction and then went idle.
+--   lock_timeout makes a statement give up instead of waiting forever behind a lock.
+ALTER ROLE rors_app    SET idle_in_transaction_session_timeout = '60s';
+ALTER ROLE rors_app    SET lock_timeout = '10s';
+ALTER ROLE rors_report SET idle_in_transaction_session_timeout = '120s';
+ALTER ROLE rors_report SET lock_timeout = '10s';
+ALTER ROLE rors_maint  SET idle_in_transaction_session_timeout = '300s';
+ALTER ROLE rors_maint  SET lock_timeout = '30s';
+ALTER ROLE rors_dba    SET idle_in_transaction_session_timeout = '600s';
